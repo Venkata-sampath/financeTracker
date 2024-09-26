@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finance Tracker</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="css/home.css">
+</head>
+<body>
+    <header>
+        <div class="header-left">
+            <h1>Finance Tracker</h1>
+        </div>
+        <div class="header-right">
+            <p>Welcome: <span id="username">Username</span></p>
+        </div>
+    </header>
+    <div class="container">
+        <!-- Top widgets -->
+        <div class="top-widgets">
+            <div class="widget" id="total-income-widget">
+                <h3>Total Income</h3>
+                <p id="total-income">$0.00</p>
+            </div>
+            <div class="widget" id="total-expense-widget">
+                <h3>Total Expense</h3>
+                <p id="total-expense">$0.00</p>
+            </div>
+            <div class="widget" id="balance-widget">
+                <h3>Balance</h3>
+                <p id="balance">$0.00</p>
+            </div>
+        </div>
+
+        <!-- Expense category widgets -->
+        <div class="category-widgets">
+            <div class="widget food-widget">
+                <i class="fas fa-utensils"></i>
+                <h4>Food</h4>
+                <p class="amount">$0.00</p>
+            </div>
+            <div class="widget clothing-widget">
+                <i class="fas fa-tshirt"></i>
+                <h4>Clothing</h4>
+                <p class="amount">$0.00</p>
+            </div>
+            <div class="widget bills-widget">
+                <i class="fas fa-file-invoice-dollar"></i>
+                <h4>Bills</h4>
+                <p class="amount">$0.00</p>
+            </div>
+            <div class="widget others-widget">
+                <i class="fas fa-ellipsis-h"></i>
+                <h4>Others</h4>
+                <p class="amount">$0.00</p>
+            </div>
+        </div>
+
+        <!-- Forms for adding income and expense -->
+        <div class="forms">
+            <div class="form-container">
+                <h3>Add Income</h3>
+                <form id="income-form" action="php/add_income.php" method="post">
+                    <input type="number" name="amount" placeholder="Amount" required>
+                    <input type="date" name="date" required>
+                    <input type="text" name="category" placeholder="Category" required>
+                    <textarea name="description" placeholder="Description"></textarea>
+                    <button type="submit">Add Income</button>
+                </form>
+            </div>
+            <div class="form-container">
+                <h3>Add Expense</h3>
+                <form id="expense-form" action="php/add_expense.php" method="post">
+                    <input type="number" name="amount" placeholder="Amount" required>
+                    <input type="date" name="date" required>
+                    <div class="radio-buttons">
+                        <label><input type="radio" name="category" value="food" required><i class="fas fa-utensils"></i></label>
+                        <label><input type="radio" name="category" value="clothing"><i class="fas fa-tshirt"></i></label>
+                        <label><input type="radio" name="category" value="bills"><i class="fas fa-file-invoice-dollar"></i></label>
+                        <label><input type="radio" name="category" value="others"><i class="fas fa-ellipsis-h"></i></label>
+                    </div>
+                    <textarea name="description" placeholder="Description"></textarea>
+                    <button type="submit">Add Expense</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Transactions table -->
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Amount</th>
+                        <th>Category</th>
+                        <th>Date</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody id="transactions-table-body">
+                    <!-- Table rows will be dynamically populated here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script>
+    function fetchData() {
+        let url = 'php/fetch_data.php';
+        
+        fetch(url)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Update Total Income, Total Expense, and Balance
+                document.getElementById('total-income').innerText = '$' + (data.totalIncome ? data.totalIncome.toFixed(2) : '0.00');
+                document.getElementById('total-expense').innerText = '$' + (data.totalExpense ? data.totalExpense.toFixed(2) : '0.00');
+                document.getElementById('balance').innerText = '$' + (data.balance ? data.balance.toFixed(2) : '0.00');
+
+                // Update Username
+                document.getElementById('username').innerText = data.username;
+
+                // Update Category-wise Expenses (if needed)
+                if (data.categories) {
+                    if (typeof data.categories.food === 'number') {
+                        document.querySelector('.food-widget .amount').innerText = '$' + data.categories.food.toFixed(2);
+                    } else {
+                        document.querySelector('.food-widget .amount').innerText = '$0.00';
+                    }
+
+                    if (typeof data.categories.clothing === 'number') {
+                        document.querySelector('.clothing-widget .amount').innerText = '$' + data.categories.clothing.toFixed(2);
+                    } else {
+                        document.querySelector('.clothing-widget .amount').innerText = '$0.00';
+                    }
+
+                    if (typeof data.categories.bills === 'number') {
+                        document.querySelector('.bills-widget .amount').innerText = '$' + data.categories.bills.toFixed(2);
+                    } else {
+                        document.querySelector('.bills-widget .amount').innerText = '$0.00';
+                    }
+
+                    if (typeof data.categories.others === 'number') {
+                        document.querySelector('.others-widget .amount').innerText = '$' + data.categories.others.toFixed(2);
+                    } else {
+                        document.querySelector('.others-widget .amount').innerText = '$0.00';
+                    }
+                } else {
+                    console.error('Category data is missing or invalid.');
+                }
+
+                // Update Transactions Table
+                let transactionsHtml = '';
+                data.transactions.forEach(transaction => {
+                    const amount = typeof transaction.amount === 'number' ? transaction.amount.toFixed(2) : '0.00';
+                    transactionsHtml += `
+                        <tr>
+                            <td>${transaction.type}</td>
+                            <td>$${amount}</td>
+                            <td>${transaction.category}</td>
+                            <td>${transaction.date}</td>
+                            <td>${transaction.description}</td>
+                        </tr>
+                    `;
+                });
+                document.getElementById('transactions-table-body').innerHTML = transactionsHtml;
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+                document.getElementById('transactions-table-body').innerHTML = '<tr><td colspan="5">Error fetching data. Please try again.</td></tr>';
+            });
+    }
+
+    // Fetch initial data
+    fetchData();
+    </script>
+</body>
+</html>

@@ -1,0 +1,202 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    color: #333;
+}
+
+header {
+    background-color: #000;
+    color: #fff;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-left h1 {
+    margin: 0;
+}
+
+.header-right p {
+    margin: 0;
+}
+
+.container {
+    width: 80%;
+    margin: auto;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.top-widgets, .category-widgets, .forms {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    margin: 20px 0;
+}
+
+.widget {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    flex: 1;
+    margin: 0 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.widget h3, .widget h4 {
+    margin: 0;
+    padding: 0;
+}
+
+.widget:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+}
+
+.category-widgets .widget {
+    flex: 1;
+    margin: 0 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.category-widgets .widget i {
+    font-size: 30px;
+    margin-bottom: 10px;
+}
+
+.form-container {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    width: 48%;
+    margin: 0 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+form input, form textarea, form button {
+    margin: 10px 0;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+form button {
+    background-color: #000;
+    color: #fff;
+    cursor: pointer;
+}
+
+form button:hover {
+    background-color: #444;
+}
+
+.radio-buttons {
+    display: flex;
+    justify-content: space-between;
+}
+
+.radio-buttons label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.radio-buttons input {
+    display: none;
+}
+
+.radio-buttons i {
+    font-size: 20px;
+}
+
+.radio-buttons input:checked + i {
+    color: #000;
+}
+
+.table-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 20px 0;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+table th, table td {
+    padding: 10px;
+    text-align: left;
+    border: 1px solid #ddd;
+}
+
+table th {
+    background-color: #f4f4f4;
+}
+
+table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+@media (max-width: 768px) {
+    .top-widgets, .category-widgets, .forms {
+        flex-direction: column;
+    }
+
+    .widget, .form-container {
+        margin: 10px 0;
+    }
+
+    .radio-buttons {
+        flex-wrap: wrap;
+    }
+
+    .radio-buttons label {
+        margin: 5px;
+    }
+}
+
+.error-message {
+    color: red;
+    text-align: center;
+    margin-top: 20px;
+}
+
+table tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+form input:focus, form textarea:focus {
+    outline: none;
+    border-color: #000;
+}
+
+button {
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+button:hover {
+    transform: translateY(-2px);
+}
+
+button:active {
+    transform: translateY(1px);
+}
